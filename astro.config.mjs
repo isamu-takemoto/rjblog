@@ -10,15 +10,14 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://takeisa.dev',
+  site: 'https://rjblog-gamma.vercel.app',
   output: 'server',
   adapter: vercel(),
   integrations: [mdx(), sitemap(), react(), keystatic()],
 
   security: {
     allowedDomains: [
-      { hostname: 'takeisa.dev', protocol: 'https' },
-      { hostname: 'www.takeisa.dev', protocol: 'https' },
+      { hostname: 'rjblog-gamma.vercel.app', protocol: 'https' },
     ],
   },
 
