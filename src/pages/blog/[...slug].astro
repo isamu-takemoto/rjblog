@@ -1,0 +1,48 @@
+---
+export const prerender = true;
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+
+export async function getStaticPaths() {
+	const allPosts = await getCollection('blog');
+	const posts = allPosts
+		.filter((post) => import.meta.env.DEV || !post.data.draft)
+		.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+	return posts.map((post, index) => {
+		const prevPost = index < posts.length - 1 ? posts[index + 1] : null;
+		const nextPost = index > 0 ? posts[index - 1] : null;
+		const relatedPosts = posts
+			.filter(
+				(p) =>
+					p.id !== post.id &&
+					p.data.tags?.some((tag) => post.data.tags?.includes(tag)),
+			)
+			.slice(0, 3);
+
+		return {
+			params: { slug: post.id },
+			props: { post, prevPost, nextPost, relatedPosts },
+		};
+	});
+}
+
+interface Props {
+	post: CollectionEntry<'blog'>;
+	prevPost: CollectionEntry<'blog'> | null;
+	nextPost: CollectionEntry<'blog'> | null;
+	relatedPosts: CollectionEntry<'blog'>[];
+}
+
+const { post, prevPost, nextPost, relatedPosts } = Astro.props;
+const { Content } = await render(post);
+---
+
+{post.data.draft && (
+  <div style="background:#fef3c7;border:2px dashed #f59e0b;padding:0.75em 1.25em;text-align:center;font-weight:bold;color:#92400e;position:sticky;top:0;z-index:100;">
+    下書き — 本番環境には表示されません
+  </div>
+)}
+<BlogPost {...post.data} postId={post.id} prevPost={prevPost} nextPost={nextPost} relatedPosts={relatedPosts}>
+	<Content />
+</BlogPost>

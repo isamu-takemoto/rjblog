@@ -1,0 +1,52 @@
+<canvas id="trail-canvas" style="position:fixed;top:0;left:0;pointer-events:none;z-index:9999;"></canvas>
+
+<script>
+  function initTrail() {
+    const canvas = document.getElementById('trail-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d')!;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    const particles: { x: number; y: number; size: number; alpha: number; color: string }[] = [];
+    const colors = ['#f97316', '#fb923c', '#fdba74'];
+
+    window.addEventListener('mousemove', (e) => {
+      particles.push({
+        x: e.clientX,
+        y: e.clientY,
+        size: Math.random() * 5 + 3,
+        alpha: 0.7,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      });
+    });
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.alpha -= 0.03;
+        p.size *= 0.95;
+        if (p.alpha <= 0) { particles.splice(i, 1); continue; }
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  }
+
+  initTrail();
+  document.addEventListener('astro:page-load', initTrail);
+</script>

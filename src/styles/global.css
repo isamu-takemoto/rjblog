@@ -1,0 +1,139 @@
+:root {
+  --accent: #f97316;
+  --accent-dark: #c2410c;
+  --black: 15, 18, 25;
+  --gray: 120, 120, 128;
+  --gray-light: 235, 235, 240;
+  --gray-dark: 34, 41, 57;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    "Noto Sans JP", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: rgb(var(--gray-dark));
+  font-size: 16px;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 1.5em 0 0.5em;
+  color: rgb(var(--black));
+  line-height: 1.4;
+  font-weight: 700;
+}
+h1 { font-size: 1.8em; margin-top: 0; }
+h2 { font-size: 1.4em; }
+h3 { font-size: 1.2em; }
+h4 { font-size: 1.05em; }
+
+strong, b { font-weight: 700; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+p {
+  margin: 0 0 1.2em;
+  line-height: 1.8;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.875em;
+  padding: 0.2em 0.4em;
+  background: rgb(var(--gray-light));
+  border-radius: 4px;
+}
+
+pre {
+  padding: 1.2em 1.5em;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.875em;
+  line-height: 1.6;
+}
+pre > code {
+  all: unset;
+}
+
+blockquote {
+  border-left: 3px solid var(--accent);
+  margin: 1.5em 0;
+  padding: 0.5em 0 0.5em 1.2em;
+  color: rgb(var(--gray));
+  font-size: 0.95em;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid rgb(var(--gray-light));
+  margin: 2em 0;
+}
+
+ul, ol {
+  padding-left: 1.5em;
+  margin: 0 0 1.2em;
+}
+li {
+  margin-bottom: 0.3em;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+th, td {
+  border: 1px solid rgb(var(--gray-light));
+  padding: 0.5em 0.8em;
+  text-align: left;
+}
+th {
+  background: rgb(var(--gray-light));
+}
+
+/* View Transitions */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+}
+@keyframes fade-out {
+  to { opacity: 0; transform: translateY(-6px); }
+}
+::view-transition-old(root) {
+  animation: 200ms ease-in fade-out;
+}
+::view-transition-new(root) {
+  animation: 250ms ease-out fade-in;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

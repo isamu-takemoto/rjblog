@@ -1,0 +1,50 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import BaseHead from '../components/BaseHead.astro';
+import CustomCursor from '../components/CustomCursor.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+interface Props {
+  title: string;
+  description: string;
+  ogImageUrl?: string;
+}
+
+const { title, description, ogImageUrl } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <BaseHead title={title} description={description} ogImageUrl={ogImageUrl} />
+    <ViewTransitions />
+  </head>
+  <body>
+    <Header />
+    <div class="page-wrapper">
+      <main>
+        <slot />
+      </main>
+    </div>
+    <Footer />
+    <CustomCursor />
+  </body>
+</html>
+
+<style>
+  .page-wrapper {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3em 1.5em;
+  }
+  main {
+    min-width: 0;
+  }
+  @media (max-width: 720px) {
+    .page-wrapper {
+      flex-direction: column;
+      padding: 1.5em 1em;
+      gap: 2em;
+    }
+  }
+</style>

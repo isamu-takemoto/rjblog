@@ -1,0 +1,91 @@
+---
+import { PROFILE } from '../consts';
+
+const iconMap: Record<string, string> = {
+  GitHub: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="20" height="20"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>`,
+  X: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="20" height="20"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>`,
+  Zenn: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 88" fill="currentColor" width="20" height="20"><path d="M0 63.8L31.7 0h16.6L16.6 63.8H0zm38.7 0L70.4 0H87L55.3 63.8H38.7zM55.5 88l9.4-19.6H88L78.6 88H55.5z"/></svg>`,
+  Note: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"><rect x="0.5" y="0.5" width="19" height="19" rx="4" ry="4" fill="white" stroke="#d1d5db" stroke-width="1"/><g transform="translate(1.25, -1.25)"><path fill="currentColor" d="M4.5 15.5V7h2.4v1.4C7.4 7.5 8.2 7 9.2 7c2.1 0 3.8 1.7 3.8 4v4.5h-2.4v-4c0-1.1-.8-2-1.9-2s-1.9.9-1.9 2v4H4.5z"/></g></svg>`,
+};
+---
+
+<aside class="profile-card">
+  <div class="profile-header">
+    <img
+      class="avatar"
+      src={PROFILE.avatar}
+      alt={PROFILE.name}
+      onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><rect width=%2240%22 height=%2240%22 rx=%2220%22 fill=%22%23e5e7eb%22/></svg>'"
+    />
+    <span class="name">{PROFILE.name}</span>
+  </div>
+  {PROFILE.bio.map((line) => <p class="bio">{line}</p>)}
+  <div class="links">
+    {PROFILE.links.map((link) => (
+      <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={link.label} set:html={iconMap[link.label] ?? link.label} />
+    ))}
+  </div>
+</aside>
+
+<style>
+  .profile-card {
+    width: 200px;
+    flex-shrink: 0;
+  }
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    margin-bottom: 0.8em;
+  }
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .name {
+    font-weight: 700;
+    font-size: 0.95em;
+    color: rgb(var(--black));
+  }
+  .bio {
+    font-size: 0.85em;
+    color: rgb(var(--gray));
+    line-height: 1.6;
+    margin: 0 0 0.8em 0;
+  }
+  .links {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.8em;
+    align-items: center;
+  }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    color: rgb(var(--gray));
+    text-decoration: none !important;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .links a:hover {
+    color: var(--accent);
+    text-decoration: none !important;
+  }
+  @media (max-width: 720px) {
+    .profile-card {
+      width: 100%;
+      padding-bottom: 1em;
+      border-bottom: 1px solid rgb(var(--gray-light));
+    }
+    .profile-header {
+      margin-bottom: 0.6em;
+    }
+    .avatar {
+      width: 44px;
+      height: 44px;
+    }
+  }
+</style>

@@ -1,0 +1,26 @@
+---
+const today = new Date();
+---
+
+<footer>
+	<p>&copy; {today.getFullYear()} takeisa · <a href="/rss.xml">RSS</a></p>
+</footer>
+<style>
+	footer {
+		padding: 2em 1em;
+		border-top: 1px solid rgb(var(--gray-light));
+		text-align: center;
+		color: rgb(var(--gray));
+		font-size: 0.9em;
+	}
+	footer p {
+		margin: 0;
+	}
+	footer a {
+		color: rgb(var(--gray));
+		text-decoration: none;
+	}
+	footer a:hover {
+		color: var(--accent);
+	}
+</style>

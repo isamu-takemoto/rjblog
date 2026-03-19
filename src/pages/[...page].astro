@@ -1,0 +1,112 @@
+---
+export const prerender = true;
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = (await getCollection('blog'))
+    .filter((post) => !post.data.draft)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  return paginate(posts, { pageSize: 10 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <ul>
+    {page.data.map((post) => (
+      <li>
+        <a href={`/blog/${post.id}/`}>
+          <span class="date"><FormattedDate date={post.data.pubDate} /></span>
+          <span class="title">{post.data.title}</span>
+          <p class="excerpt">{post.data.description}</p>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  {(page.url.prev || page.url.next) && (
+    <nav class="pagination">
+      {page.url.prev
+        ? <a href={page.url.prev} class="page-link">← 新しい記事</a>
+        : <span class="page-link disabled">← 新しい記事</span>
+      }
+      <span class="page-info">{page.currentPage} / {page.lastPage}</span>
+      {page.url.next
+        ? <a href={page.url.next} class="page-link">古い記事 →</a>
+        : <span class="page-link disabled">古い記事 →</span>
+      }
+    </nav>
+  )}
+</BaseLayout>
+
+<style>
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    border-bottom: 1px solid rgb(var(--gray-light));
+  }
+  li a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+    padding: 1.5em 0;
+    color: rgb(var(--gray-dark));
+    text-decoration: none;
+  }
+  li a:hover .title {
+    color: var(--accent);
+  }
+  .date {
+    font-size: 0.82em;
+    color: rgb(var(--gray));
+  }
+  .title {
+    font-size: 1.05em;
+    font-weight: 600;
+  }
+  .excerpt {
+    margin: 0;
+    font-size: 0.88em;
+    color: rgb(var(--gray));
+    line-height: 1.5;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2em;
+    padding-top: 1.5em;
+    border-top: 1px solid rgb(var(--gray-light));
+  }
+  .page-link {
+    font-size: 0.9em;
+    color: rgb(var(--gray-dark));
+    text-decoration: none;
+    padding: 0.4em 0.8em;
+    border: 1px solid rgb(var(--gray-light));
+    border-radius: 4px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  a.page-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .page-link.disabled {
+    color: rgb(var(--gray-light));
+    border-color: rgb(var(--gray-light));
+    cursor: default;
+  }
+  .page-info {
+    font-size: 0.85em;
+    color: rgb(var(--gray));
+  }
+</style>

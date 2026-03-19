@@ -1,0 +1,58 @@
+---
+export const prerender = true;
+import { getCollection } from 'astro:content';
+import { SITE_TITLE } from '../../consts';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = await getCollection('blog');
+
+const tagCounts = posts.reduce((acc, post) => {
+  for (const tag of post.data.tags ?? []) {
+    acc[tag] = (acc[tag] ?? 0) + 1;
+  }
+  return acc;
+}, {} as Record<string, number>);
+
+const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
+---
+
+<BaseLayout title={`Tags | ${SITE_TITLE}`} description="タグ一覧">
+  <h1>Tags</h1>
+  <div class="tag-list">
+    {tags.map(([tag, count]) => (
+      <a href={`/tags/${tag}/`} class="tag">
+        #{tag} <span class="count">{count}</span>
+      </a>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  h1 {
+    margin: 0 0 1.5em 0;
+  }
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+  }
+  .tag {
+    font-size: 0.88em;
+    color: rgb(var(--gray-dark));
+    background: #fff;
+    border: 1px solid rgb(var(--gray-light));
+    padding: 0.3em 0.8em;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .tag:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    text-decoration: none;
+  }
+  .count {
+    color: rgb(var(--gray));
+    font-size: 0.85em;
+  }
+</style>
