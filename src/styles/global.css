@@ -1,11 +1,13 @@
 :root {
-  --accent: #f97316;
-  --accent-dark: #c2410c;
+  --accent: #e91e8c;
+  --accent-dark: #c2186e;
   --black: 15, 18, 25;
-  --gray: 120, 120, 128;
-  --gray-light: 235, 235, 240;
-  --gray-dark: 34, 41, 57;
-  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --gray: 130, 120, 135;
+  --gray-light: 230, 225, 235;
+  --gray-dark: 60, 50, 70;
+  --sky: #d6eefb;
+  --pink-light: #fde8f3;
+  --box-shadow: 0 3px 12px rgba(200, 100, 150, 0.12);
 }
 
 * {
@@ -14,14 +16,15 @@
 
 body {
   font-family:
-    -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
-    "Noto Sans JP", sans-serif;
+    "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP",
+    -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
   padding: 0;
-  background: #fff;
+  background: linear-gradient(160deg, #e8f6fd 0%, #fde8f3 100%);
+  background-attachment: fixed;
   color: rgb(var(--gray-dark));
   font-size: 16px;
-  line-height: 1.8;
+  line-height: 1.9;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -48,45 +51,50 @@ a:hover {
 
 p {
   margin: 0 0 1.2em;
-  line-height: 1.8;
+  line-height: 1.9;
 }
 
 img {
   max-width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 code {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
   font-size: 0.875em;
-  padding: 0.2em 0.4em;
-  background: rgb(var(--gray-light));
-  border-radius: 4px;
+  padding: 0.2em 0.5em;
+  background: rgba(233, 30, 140, 0.08);
+  border-radius: 6px;
+  color: var(--accent-dark);
 }
 
 pre {
   padding: 1.2em 1.5em;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow-x: auto;
   font-size: 0.875em;
   line-height: 1.6;
+  background: #fff;
+  border: 2px solid rgb(var(--gray-light));
 }
 pre > code {
   all: unset;
 }
 
 blockquote {
-  border-left: 3px solid var(--accent);
+  border-left: 4px solid var(--accent);
   margin: 1.5em 0;
   padding: 0.5em 0 0.5em 1.2em;
   color: rgb(var(--gray));
   font-size: 0.95em;
+  background: var(--pink-light);
+  border-radius: 0 8px 8px 0;
 }
 
 hr {
   border: none;
-  border-top: 1px solid rgb(var(--gray-light));
+  border-top: 2px dashed rgb(var(--gray-light));
   margin: 2em 0;
 }
 
@@ -109,7 +117,7 @@ th, td {
   text-align: left;
 }
 th {
-  background: rgb(var(--gray-light));
+  background: var(--pink-light);
 }
 
 /* View Transitions */
