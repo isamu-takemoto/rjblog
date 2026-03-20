@@ -5,7 +5,7 @@ export default config({
     process.env.NODE_ENV === 'production'
       ? {
           kind: 'github',
-          repo: 'isamu-takemoto/my-blog-site',
+          repo: 'isamu-takemoto/rjblog',
           branchPrefix: 'keystatic/',
         }
       : {
@@ -19,7 +19,7 @@ export default config({
       path: 'src/content/blog/*',
       format: { contentField: 'content' },
       previewUrl: process.env.NODE_ENV === 'production'
-        ? 'https://takeisa.dev/blog/{slug}'
+        ? 'https://rjblog-gamma.vercel.app/blog/{slug}'
         : '/blog/{slug}',
       schema: {
         slug: fields.text({
