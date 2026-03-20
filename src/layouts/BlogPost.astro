@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE } from '../consts';
 import BaseLayout from './BaseLayout.astro';
+import PostInteractions from '../components/PostInteractions';
 
 type Props = CollectionEntry<'blog'>['data'] & {
   postId?: string;
@@ -44,6 +45,9 @@ const ogImageUrl = postId && Astro.site ? new URL(`/og/${postId}.png`, Astro.sit
         ))}
       </div>
     )}
+
+    {/* いいね・コメント */}
+    <PostInteractions client:load slug={postId ?? ''} />
 
     {/* SNSシェア */}
     <div class="share">
@@ -155,6 +159,146 @@ const ogImageUrl = postId && Astro.site ? new URL(`/og/${postId}.png`, Astro.sit
     color: var(--accent);
     border-color: var(--accent);
     text-decoration: none;
+  }
+
+  /* いいね・コメント */
+  :global(.post-interactions) {
+    margin-top: 2em;
+    padding-top: 1.5em;
+    border-top: 1px solid rgb(var(--gray-light));
+  }
+  :global(.likes-area) {
+    text-align: center;
+    margin-bottom: 2em;
+  }
+  :global(.like-btn) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.6em 1.4em;
+    border: 2px solid #e91e8c;
+    border-radius: 999px;
+    background: #fff;
+    color: #e91e8c;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  :global(.like-btn:hover) {
+    background: #fce4f3;
+    transform: scale(1.05);
+  }
+  :global(.like-btn.liked) {
+    background: #fce4f3;
+  }
+  :global(.like-btn:active) {
+    transform: scale(0.97);
+  }
+  :global(.heart-icon) {
+    font-size: 1.3em;
+  }
+  :global(.like-count) {
+    font-size: 1em;
+  }
+  :global(.comments-section) {
+    margin-top: 0.5em;
+  }
+  :global(.comments-heading) {
+    font-size: 1.1em;
+    font-weight: 700;
+    margin-bottom: 1em;
+    color: rgb(var(--gray-dark));
+  }
+  :global(.comment-form) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7em;
+    margin-bottom: 1.5em;
+    background: #f0f8ff;
+    padding: 1.2em;
+    border-radius: 12px;
+    border: 1.5px solid #bae6fd;
+  }
+  :global(.comment-input),
+  :global(.comment-textarea) {
+    width: 100%;
+    padding: 0.6em 0.9em;
+    border: 1.5px solid #bae6fd;
+    border-radius: 8px;
+    font-size: 0.95em;
+    font-family: inherit;
+    background: #fff;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  :global(.comment-input:focus),
+  :global(.comment-textarea:focus) {
+    border-color: #38bdf8;
+  }
+  :global(.comment-textarea) {
+    resize: vertical;
+    min-height: 90px;
+  }
+  :global(.comment-error) {
+    color: #dc2626;
+    font-size: 0.88em;
+    margin: 0;
+  }
+  :global(.comment-submit) {
+    align-self: flex-end;
+    padding: 0.55em 1.4em;
+    background: #e91e8c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  :global(.comment-submit:hover) {
+    opacity: 0.85;
+  }
+  :global(.comment-submit:disabled) {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  :global(.no-comments) {
+    text-align: center;
+    color: rgb(var(--gray));
+    font-size: 0.9em;
+    padding: 1em 0;
+  }
+  :global(.comment-item) {
+    padding: 1em 0;
+    border-bottom: 1px solid rgb(var(--gray-light));
+  }
+  :global(.comment-item:last-child) {
+    border-bottom: none;
+  }
+  :global(.comment-meta) {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.4em;
+  }
+  :global(.comment-name) {
+    font-weight: 600;
+    font-size: 0.9em;
+    color: #0369a1;
+  }
+  :global(.comment-date) {
+    font-size: 0.8em;
+    color: rgb(var(--gray));
+  }
+  :global(.comment-body) {
+    margin: 0;
+    font-size: 0.95em;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   /* SNSシェア */
