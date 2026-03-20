@@ -1,40 +1,104 @@
 import type { APIRoute } from 'astro';
+import { createElement } from 'react';
+import satori from 'satori';
 import sharp from 'sharp';
 
 export const prerender = false;
 
-let cachedTurtlePng: Buffer | null = null;
+let cachedFont: ArrayBuffer | null = null;
 
-async function getTurtlePng(): Promise<Buffer> {
-  if (cachedTurtlePng) return cachedTurtlePng;
-  const svg = await fetch(
-    'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f422.svg'
+async function getFont(): Promise<ArrayBuffer> {
+  if (cachedFont) return cachedFont;
+  const css = await fetch(
+    'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&text=rjblog%E3%82%8A%E3%82%87%E3%81%86%E3%81%98%E3%82%8D%E3%81%86%E3%81%AE%E3%83%96%E3%83%AD%E3%82%B0',
+    {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      },
+    }
   ).then((r) => r.text());
-  cachedTurtlePng = await sharp(Buffer.from(svg)).resize(280, 280).png().toBuffer();
-  return cachedTurtlePng;
+  const fontUrl = css.match(/src:\s*url\(([^)]+)\)/)?.[1];
+  if (!fontUrl) throw new Error('Font URL not found');
+  cachedFont = await fetch(fontUrl).then((r) => r.arrayBuffer());
+  return cachedFont;
+}
+
+async function loadEmoji(segment: string): Promise<string> {
+  const codePoint = [...segment]
+    .map((c) => c.codePointAt(0)?.toString(16))
+    .filter(Boolean)
+    .join('-');
+  const url = `https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/${codePoint}.svg`;
+  const svg = await fetch(url).then((r) => r.text());
+  return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
 }
 
 export const GET: APIRoute = async () => {
-  const turtlePng = await getTurtlePng();
+  const fontData = await getFont();
 
-  const bgSvg = `
-<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#e8f5e9" />
-      <stop offset="100%" stop-color="#c8e6c9" />
-    </linearGradient>
-  </defs>
-  <rect width="1200" height="630" fill="url(#bg)" />
-  <rect x="0" y="0" width="16" height="630" fill="#4caf50" />
-  <text x="600" y="490" font-size="80" font-weight="bold" text-anchor="middle" fill="#1b5e20" font-family="sans-serif">rjblog</text>
-  <text x="600" y="566" font-size="34" text-anchor="middle" fill="#388e3c" font-family="sans-serif">&#x308A;&#x3087;&#x3046;&#x3058;&#x308D;&#x3046;&#x306E;&#x30D6;&#x30ED;&#x30B0;</text>
-</svg>`;
+  const svg = await satori(
+    createElement(
+      'div',
+      {
+        style: {
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)',
+          borderLeft: '16px solid #4caf50',
+          fontFamily: '"Noto Sans JP"',
+          gap: '16px',
+        },
+      },
+      createElement('div', { style: { fontSize: 200, lineHeight: 1 } }, '🐢'),
+      createElement(
+        'div',
+        {
+          style: {
+            fontSize: 80,
+            fontWeight: 700,
+            color: '#1b5e20',
+            marginTop: '8px',
+          },
+        },
+        'rjblog'
+      ),
+      createElement(
+        'div',
+        {
+          style: {
+            fontSize: 32,
+            color: '#388e3c',
+          },
+        },
+        'りょうじろうのブログ'
+      )
+    ),
+    {
+      width: 1200,
+      height: 630,
+      fonts: [
+        {
+          name: 'Noto Sans JP',
+          data: fontData,
+          weight: 700,
+          style: 'normal',
+        },
+      ],
+      loadAdditionalAsset: async (code: string, segment: string) => {
+        if (code === 'emoji') {
+          return loadEmoji(segment);
+        }
+        return '';
+      },
+    }
+  );
 
-  const png = await sharp(Buffer.from(bgSvg))
-    .composite([{ input: turtlePng, top: 90, left: 460 }])
-    .png()
-    .toBuffer();
+  const png = await sharp(Buffer.from(svg)).png().toBuffer();
 
   return new Response(new Uint8Array(png), {
     headers: {
