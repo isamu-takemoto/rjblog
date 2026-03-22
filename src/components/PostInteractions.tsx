@@ -123,7 +123,13 @@ export default function PostInteractions({ slug }: Props) {
                 <div className="comment-meta">
                   <span className="comment-name">✏️ {c.name}</span>
                   <span className="comment-date">
-                    {new Date(c.createdAt).toLocaleDateString('ja-JP')}
+                    {new Date(c.createdAt).toLocaleString('ja-JP', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
                   </span>
                 </div>
                 <p className="comment-body">{c.body}</p>
